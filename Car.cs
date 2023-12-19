@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace DB_Lab_2_Threads
@@ -30,30 +31,30 @@ namespace DB_Lab_2_Threads
                 {
                     Random random = new Random();
                     int incident = random.Next(1, 51);
-
-                    if (incident == 1)
+                                        
+                    if (incident == 1) // Chance of occurance 1/50
                     {
                         Console.WriteLine($"\n {Name} has no gas left and needs to refuel. Delayed by 3 seconds.");
                         await Task.Delay(3000);
-                    }
-                    else if (incident <= 3)
+                    }                    
+                    else if (incident <= 3) // Chance of occurance 2/50
                     {
                         Console.WriteLine($"\n {Name} got a flat tire and needs to swap it. Delayed by 2 seconds.");
                         await Task.Delay(2000);
                     }
-                    else if (incident <= 8)
+                    else if (incident <= 8) // Chance of occurance 5/50
                     {
                         Console.WriteLine($"\n {Name} got hit by a bird and needs to clean the windshield. Delayed by 1 second.");
                         await Task.Delay(1000);
                     }
-                    else if (incident <= 18)
+                    else if (incident <= 18) // Chance of occurance 10/50
                     {
                         Console.WriteLine($"\n {Name} has engine problems. Speed reduced by 1 km/h.");
                         Speed--;
                     }
                 }
 
-                Distance += Speed;
+                Distance += Speed; // Add to distance property after each iteration completes
 
                 if (Distance >= 10000)
                 {

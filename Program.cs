@@ -21,13 +21,16 @@ namespace DB_Lab_2_Threads
 
             Console.WriteLine("\n\t>>> THE RACE HAS STARTED! <<<");
 
-            // Start all car tasks simultaneously using Task.Run
+            /* Start all car tasks simultaneously using Task.Run() on 
+             * each element of the 'cars' list to run tasks asynchronously.
+             * Convert result of 'Select' operation: IEnumerable<Task>, to a List<Task>. */
             List<Task> raceTasks = cars.Select(car => Task.Run(() => car.RaceAsync())).ToList();
 
-            // ConcurrentDictionary to track race status
+            /* Use ConcurrentDictionary to track race status. This thread-safe collection can be accessed 
+             * concurrecntly by multiple threads without explicit locking. */
             ConcurrentDictionary<string, Car> raceStatus = new ConcurrentDictionary<string, Car>();
 
-            // Check race status when the user presses Enter
+            // Check race status when the user presses keyboard key 'Enter'
             while (true)
             {
                 if (Console.KeyAvailable && Console.ReadKey().Key == ConsoleKey.Enter)
@@ -40,14 +43,20 @@ namespace DB_Lab_2_Threads
                     }
                 }
 
-                // Check if any car has finished the race
-                Car winner = cars.FirstOrDefault(car => car.Distance >= 10000);
+
+                /* Check using LINQ for the first car in the 'cars' list that has passed the finish line (distance > 10000).
+                 * Assign a reference to the first Car object that passes the finish line to variable 'winner' which is of type 'Car'.
+                 * Make winner nullable by adding '?'*/
+                Car? winner = cars.FirstOrDefault(car => car.Distance >= 10000);
+
+                /* Check if any car has finished the race. Will only assign one winner since the TryAdd method of ConcurrentDictionary
+                 * will only add "Winner" if it's not already assigned */
                 if (winner != null && raceStatus.TryAdd("Winner", winner))
                 {
                     Console.WriteLine($"\n\n\t~~~ {winner.Name} IS THE WINNER! ~~~\n");
                 }
 
-                // Check if all cars have finished the race
+                // Check using LINQ and a lambda expression if all cars have finished the race
                 if (raceTasks.All(t => t.IsCompleted))
                 {
                     Console.WriteLine("\n\tALL CARS FINISHED!");
