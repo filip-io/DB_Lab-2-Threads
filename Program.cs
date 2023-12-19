@@ -36,7 +36,7 @@ namespace DB_Lab_2_Threads
                     Console.WriteLine("\t------------------");
                     foreach (var car in cars)
                     {
-                        Console.WriteLine($"\t{car.Name}: \tDistance: {car.Distance} km \tSpeed: {car.GetSpeed()} km/h");
+                        Console.WriteLine($"\t{car.Name}: \tDistance: {car.Distance} km \tSpeed: {car.Speed} km/h");
                     }
                 }
 

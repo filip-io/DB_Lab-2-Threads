@@ -9,8 +9,8 @@ namespace DB_Lab_2_Threads
     internal class Car
     {
         public string Name { get; set; }
-        public int Distance { get; set; }
-        public int Speed { get; set; }
+        public int Distance { get; private set; }
+        public int Speed { get; private set; }
 
         public Car(string name)
         {
@@ -60,10 +60,6 @@ namespace DB_Lab_2_Threads
                     Console.WriteLine($"\n\t{Name} has finished!");
                 }
             }
-        }
-        public int GetSpeed()
-        {
-            return Speed;
         }
     }
 }
