@@ -13,18 +13,33 @@ namespace DB_Lab_2_Threads
         {
             List<Car> cars = new List<Car>
             {
-                new Car("Skoda"),
-                new Car("KIA"),
-                new Car("Audi"),
-                new Car("BMW")
+                new Car("TurtleVan"),
+                new Car("Batmobile"),
+                new Car("Gadgetmobile"),
+                new Car("LandRaider")
             };
 
-            Console.WriteLine("\n\t>>> THE RACE HAS STARTED! <<<");
+            Console.Title = "THE RACE OF THE AGES!";
+            Console.CursorVisible = false;
 
-            /* Start all car tasks simultaneously using Task.Run() on 
-             * each element of the 'cars' list to run tasks asynchronously.
-             * Convert result of 'Select' operation: IEnumerable<Task>, to a List<Task>. */
-            List<Task> raceTasks = cars.Select(car => Task.Run(() => car.RaceAsync())).ToList();
+            Console.WriteLine("\n\t  >>> WELCOME TO THE RACE OF THE AGES! <<<");
+            Console.WriteLine("\n\t     Contestants lining up for start... ");
+
+            Thread.Sleep(2000);
+
+            List<Task> raceTasks = cars
+                .Select(car =>
+            {
+                // Print message to display starting contestants
+                Console.Write($"\n\t\t\t{car.Name} \t");
+
+                // Start a 'Task' for each car with the RaceAsync method to run asynchronously
+                return Task.Run(() => car.RaceAsync());
+            })
+            .ToList();
+
+            Console.WriteLine("\n\n\n\t\t>>> THE RACE HAS STARTED! <<<");
+            Console.WriteLine("\n     [ Press ENTER during the race to display current status ] \n");
 
             /* Use ConcurrentDictionary to track race status. This thread-safe collection can be accessed 
              * concurrecntly by multiple threads without explicit locking. */
@@ -43,10 +58,8 @@ namespace DB_Lab_2_Threads
                     }
                 }
 
-
                 /* Check using LINQ for the first car in the 'cars' list that has passed the finish line (distance > 10000).
-                 * Assign a reference to the first Car object that passes the finish line to variable 'winner' which is of type 'Car'.
-                 * Make winner nullable by adding '?'*/
+                 * Assign a reference to the first Car object that passes the finish line to variable 'winner' which is of type 'Car'. */
                 Car? winner = cars.FirstOrDefault(car => car.Distance >= 10000);
 
                 /* Check if any car has finished the race. Will only assign one winner since the TryAdd method of ConcurrentDictionary
@@ -56,15 +69,13 @@ namespace DB_Lab_2_Threads
                     Console.WriteLine($"\n\n\t~~~ {winner.Name} IS THE WINNER! ~~~\n");
                 }
 
-                // Check using LINQ and a lambda expression if all cars have finished the race
                 if (raceTasks.All(t => t.IsCompleted))
                 {
                     Console.WriteLine("\n\tALL CARS FINISHED!");
                     break;
                 }
             }
-
-            // Make sure all tasks are completed before exiting
+            // Use await to make sure all tasks are completed before exiting
             await Task.WhenAll(raceTasks);
 
             Console.ReadKey();
